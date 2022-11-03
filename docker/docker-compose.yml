@@ -1,0 +1,38 @@
+version: "3.9"
+   
+services:
+  postgres:
+    image: postgres
+    container_name: postgres_container
+    volumes:
+      - ~/docker_volumes/psql-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=psql_db
+      - POSTGRES_PASSWORD=psql_user
+    ports:
+      - "5432:5432"
+    networks:
+      mynet:
+        ipv4_address: 10.10.2.20
+  web:
+    build: .
+    container_name: django_container
+    depends_on:
+      - postgres
+    volumes:
+      - type: bind
+        source: ~/docker_volumes/django_task/rocket-data-task
+        target: /usr/src/rocket-data-task
+    ports:
+      - "8000:8000"
+    networks:
+      mynet:
+        ipv4_address: 10.10.2.10
+
+networks:
+  mynet:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.10.2.0/24
+         gateway: 10.10.2.1

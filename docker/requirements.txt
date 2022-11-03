@@ -1,0 +1,13 @@
+django
+
+# db
+psycopg2
+
+# api
+djangorestframework
+drf-yasg
+
+# api oauth2
+
+#.env
+python-dotenv

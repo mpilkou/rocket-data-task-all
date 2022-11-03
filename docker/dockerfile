@@ -1,0 +1,16 @@
+FROM python:3
+
+RUN apt-get update \
+    && apt-get install -y
+
+RUN apt-get install -y python3-pip 
+
+WORKDIR /usr/src/app
+COPY requirements.txt ./requirements.txt
+
+RUN python3 -m pip install -r requirements.txt
+
+WORKDIR /usr/src/rocket-data-task/task1_project
+
+EXPOSE 8000 80
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
