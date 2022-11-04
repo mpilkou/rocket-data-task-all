@@ -32,6 +32,38 @@ ENV = os.getenv
 # SECRET_KEY = 'django-insecure-6&mhe$ge*e9%_)law@s^v0g3gngr$uwhx6!&)^w(i+$_efqr5x'
 SECRET_KEY = ENV("SECRET_KEY")
 
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'simple': {
+            'format': '[{levelname}] /{module}/ {message}',
+            'style': '{',
+        },
+        'verbose': {
+            'format': '{levelname} {asctime} {module} \{process:d} {thread:d}/ {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propagate': True,
+        },
+    }
+}
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
