@@ -36,9 +36,15 @@ class Contacts(models.Model):
     house = models.CharField(max_length=10, blank=False)
     contact = models.ForeignKey(Chain, on_delete=models.CASCADE, )
 
+    def __str__(self):
+        return f'{self.contact.name}'
+
 
 class Product(models.Model):
     name = models.CharField(max_length=100, blank=False)
     model = models.CharField(max_length=60, blank=False)
     chain = models.ForeignKey(Chain, on_delete = models.CASCADE)
     date = models.DateField(verbose_name = 'relise date', auto_now=True, auto_now_add=False)
+
+    def __str__(self):
+        return self.name
