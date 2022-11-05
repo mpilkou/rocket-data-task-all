@@ -1,10 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from django.core.exceptions import ValidationError
+
 # Create your models here.
-
-
-
 class Chain(models.Model):
     TYPES_CHOISE_FIELD = (
         ('0', 'Factory'),
@@ -23,6 +22,16 @@ class Chain(models.Model):
 
     type = models.CharField(max_length=1, choices = TYPES_CHOISE_FIELD)
     level = models.SmallIntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        supplie_obj = Chain.objects.get(pk = self.supplier_id)
+        self.level = supplie_obj.level + 1
+
+        if self.level > 4:
+            raise ValidationError(' validation error in SudokuField fields ')
+        else:
+            return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
