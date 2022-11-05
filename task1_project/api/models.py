@@ -17,7 +17,6 @@ class Chain(models.Model):
     user = models.ForeignKey(User, blank=False, on_delete=models.CASCADE)
     debt = models.DecimalField(max_digits=50, decimal_places=2)
     date = models.DateField(verbose_name = 'creation date', auto_now_add=True)
-    
     supplier = models.ForeignKey('Chain', on_delete = models.RESTRICT, blank=True, null=True)
 
     type = models.CharField(max_length=1, choices = TYPES_CHOISE_FIELD)
@@ -34,7 +33,7 @@ class Chain(models.Model):
             return super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Contacts(models.Model):
@@ -46,7 +45,7 @@ class Contacts(models.Model):
     contact = models.ForeignKey(Chain, on_delete=models.CASCADE, )
 
     def __str__(self):
-        return f'{self.contact.name}'
+        return str(self.contact.name)
 
 
 class Product(models.Model):
@@ -56,4 +55,4 @@ class Product(models.Model):
     date = models.DateField(verbose_name = 'relise date', auto_now=True, auto_now_add=False)
 
     def __str__(self):
-        return self.name
+        return str(self.name)

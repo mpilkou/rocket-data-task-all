@@ -1,12 +1,11 @@
 from django.contrib import admin
+from django.utils.html import format_html
+from django.urls import reverse
 from .models import (
     Chain,
     Contacts,
     Product
 )
-
-from django.utils.html import format_html
-from django.urls import reverse
 
 
 # Register your models here.
@@ -17,9 +16,7 @@ class ContactsInline(admin.TabularInline):
 class ProductInline(admin.TabularInline):
     model = Product
 class ChainAdmin(admin.ModelAdmin):
-    
     list_display = ('id', 'name', 'type', 'view_supplier_link', 'debt', )
-    
     list_display_links = ('name', 'view_supplier_link')
 
     list_filter = ('contacts__city', )
@@ -27,7 +24,7 @@ class ChainAdmin(admin.ModelAdmin):
     actions = ('clear_debt', )
 
     def view_supplier_link(self, obj):
-        url = reverse(f"admin:api_chain_change", args=[obj.supplier_id, ])
+        url = reverse("admin:api_chain_change", args=[obj.supplier_id, ])
         return format_html('<a href="{}"> {} </a>', url, obj.supplier_id)
     view_supplier_link.short_description = "Supplier"
 
