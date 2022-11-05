@@ -12,12 +12,17 @@ class ContactsInline(admin.StackedInline):
     model = Contacts
 class ChainAdmin(admin.ModelAdmin):
     
-    list_display = ('id', 'name', 'type', 'debt', )
+    list_display = ('id', 'name', 'type', 'view_supplier_link', 'debt', )
     
-    list_display_links = ('name', )
+    list_display_links = ('name', 'view_supplier_link')
 
     list_filter = ('contacts__city', )
 
+    def view_supplier_link(self, obj):
+        url = reverse(f"admin:api_chain_change", args=[obj.supplier_id, ])
+        return format_html('<a href="{}"> {} </a>', url, obj.supplier_id)
+
+    view_supplier_link.short_description = "Supplier"
 
     inlines = [
         ChainInline,
