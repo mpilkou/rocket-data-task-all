@@ -55,6 +55,5 @@ def get_chains_by_gt_avg_debt(_):
 
     content = {
         'network': serialized_chains.data,
-        # 'avg': avg_debt
     }
     return Response(content, status=201)
