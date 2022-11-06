@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
-from .models import (
+from api.models import (
     Chain,
-    Contacts,
+    Contact,
     Product
 )
 
@@ -11,15 +11,15 @@ from .models import (
 # Register your models here.
 class ChainInline(admin.TabularInline):
     model = Chain
-class ContactsInline(admin.TabularInline):
-    model = Contacts
+class ContactInline(admin.TabularInline):
+    model = Contact
 class ProductInline(admin.TabularInline):
     model = Product
 class ChainAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'type', 'view_supplier_link', 'debt', )
     list_display_links = ('name', 'view_supplier_link')
 
-    list_filter = ('contacts__city', )
+    list_filter = ('contact__city', )
 
     actions = ('clear_debt', )
 
@@ -38,10 +38,10 @@ class ChainAdmin(admin.ModelAdmin):
 
     inlines = [
         ChainInline,
-        ContactsInline,
+        ContactInline,
         ProductInline,
     ]
 
-admin.site.register(Contacts)
+admin.site.register(Contact)
 admin.site.register(Product)
 admin.site.register(Chain, ChainAdmin)

@@ -24,8 +24,9 @@ class Chain(models.Model):
 
     def save(self, *args, **kwargs):
         self.clean()
-        supplie_obj = Chain.objects.get(pk = self.supplier_id)
-        self.level = supplie_obj.level + 1
+        if self.supplier is not None:
+            supplie_obj = Chain.objects.get(pk = self.supplier_id)
+            self.level = supplie_obj.level + 1
 
         if self.level > 4:
             raise ValidationError(' validation error in SudokuField fields ')
@@ -36,9 +37,9 @@ class Chain(models.Model):
         return str(self.name)
 
 
-class Contacts(models.Model):
+class Contact(models.Model):
     email = models.EmailField(blank=False)
-    contry = models.CharField(max_length=20, blank=False)
+    country = models.CharField(max_length=20, blank=False)
     city = models.CharField(max_length=30, blank=False)
     street = models.CharField(max_length=50, blank=False)
     house = models.CharField(max_length=10, blank=False)
