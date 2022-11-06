@@ -1,8 +1,11 @@
 import logging
+
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+
+from django.db.models import Avg, DecimalField, Q
 
 from api.models import Chain, Contact
 from api.serializers import ChainSerializer
@@ -35,5 +38,23 @@ def get_chains_by_country(_, country):
 
     content = {
         'network': serialized_chains.data,
+    }
+    return Response(content, status=201)
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication, ])
+@permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
+def get_chains_by_gt_avg_debt(_):
+    
+    avg_debt = Chain.objects.aggregate(avg=Avg('debt', output_field=DecimalField()))['avg']
+    q = Q(chain__debt__gt=avg_debt)
+    filtered_chains = Chain.objects.filter(q)
+    serialized_chains = ChainSerializer(data=filtered_chains, many=True)
+    serialized_chains.is_valid()
+
+    content = {
+        'network': serialized_chains.data,
+        # 'avg': avg_debt
     }
     return Response(content, status=201)

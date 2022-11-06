@@ -47,4 +47,5 @@ urlpatterns = [
         SchemaView.without_ui(cache_timeout=0), name='schema-json'),
     path('chain/', views.get_all_network_chains, name='chains'),
     path('chain/country/<str:country>', views.get_chains_by_country, name='chains_by_country'),
+    path('chain/statictic/', views.get_chains_by_gt_avg_debt, name='gt_avg_debt'),
 ]
