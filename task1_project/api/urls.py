@@ -45,5 +45,6 @@ urlpatterns = [
     path('swagger/', SchemaView.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
         SchemaView.without_ui(cache_timeout=0), name='schema-json'),
-    path('chain/', views.test, name='test'),
+    path('chain/', views.get_all_network_chains, name='chains'),
+    path('chain/country/<str:country>', views.get_chains_by_country, name='chains_by_country'),
 ]

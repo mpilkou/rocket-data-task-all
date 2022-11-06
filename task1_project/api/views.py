@@ -3,20 +3,37 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-# from django.shortcuts import render
-# from drf_yasg.utils import swagger_auto_schema
-from django.contrib.auth.decorators import login_required
 
+from api.models import Chain, Contact
+from api.serializers import ChainSerializer
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, BasicAuthentication, ])
 @permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
-def test(req):
-    logger = logging.getLogger(__name__)
-    logger.debug(req.data.get)
+def get_all_network_chains(_):
+    all_chains = list(Chain.objects.all())
+    serialized_all_chains = ChainSerializer(data=all_chains, many=True)
+    serialized_all_chains.is_valid()
     content = {
-            'test': 'test',
-        }
+        'network': serialized_all_chains.data,
+    }
+    return Response(content, status=201)
 
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication, ])
+@permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
+def get_chains_by_country(_, country):
+    filtered_chains = []
+
+    for contact in Contact.objects.filter(country=country):
+        filtered_chains.append(Chain.objects.get(id = contact.chain_fk.id))
+    serialized_chains = ChainSerializer(data=filtered_chains, many=True)
+    serialized_chains.is_valid()
+
+    content = {
+        'network': serialized_chains.data,
+    }
     return Response(content, status=201)
