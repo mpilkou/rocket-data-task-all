@@ -21,7 +21,7 @@ from rest_framework.authentication import BasicAuthentication, SessionAuthentica
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-from . import views
+from api import views
 
 
 SchemaView = get_schema_view(

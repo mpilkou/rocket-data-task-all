@@ -46,10 +46,9 @@ def get_chains_by_country(_, country):
 @authentication_classes([SessionAuthentication, BasicAuthentication, ])
 @permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
 def get_chains_by_gt_avg_debt(_):
-    
     avg_debt = Chain.objects.aggregate(avg=Avg('debt', output_field=DecimalField()))['avg']
-    q = Q(chain__debt__gt=avg_debt)
-    filtered_chains = Chain.objects.filter(q)
+    q_obj = Q(chain__debt__gt=avg_debt)
+    filtered_chains = Chain.objects.filter(q_obj)
     serialized_chains = ChainSerializer(data=filtered_chains, many=True)
     serialized_chains.is_valid()
 
