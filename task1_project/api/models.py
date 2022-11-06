@@ -29,7 +29,7 @@ class Chain(models.Model):
             self.level = supplie_obj.level + 1
 
         if self.level > 4:
-            raise ValidationError(' validation error in SudokuField fields ')
+            raise ValidationError(' validation error: level is too hight to this network ')
         else:
             return super().save(*args, **kwargs)
 
