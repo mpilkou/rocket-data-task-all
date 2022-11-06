@@ -43,10 +43,10 @@ class Contact(models.Model):
     city = models.CharField(max_length=30, blank=False)
     street = models.CharField(max_length=50, blank=False)
     house = models.CharField(max_length=10, blank=False)
-    contact = models.ForeignKey(Chain, on_delete=models.CASCADE, )
+    chain_fk = models.ForeignKey(Chain, on_delete=models.CASCADE, )
 
     def __str__(self):
-        return str(self.contact.name)
+        return str(self.email)
 
 
 class Product(models.Model):
