@@ -7,8 +7,8 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 
 from django.db.models import Avg, DecimalField, Q
 
-from api.models import Chain, Contact
-from api.serializers import ChainSerializer
+from api.models import Chain, Contact, Product
+from api.serializers import ChainSerializer, ContactSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +36,8 @@ def get_chains_by_country(_, country):
     serialized_chains = ChainSerializer(data=filtered_chains, many=True)
     serialized_chains.is_valid()
 
+
+
     content = {
         'network': serialized_chains.data,
     }
@@ -52,6 +54,20 @@ def get_chains_by_gt_avg_debt(_):
     serialized_chains = ChainSerializer(data=filtered_chains, many=True)
     serialized_chains.is_valid()
 
+    content = {
+        'network': serialized_chains.data,
+    }
+    return Response(content, status=201)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication, ])
+@permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
+def get_chain_contacts_by_product_id(request, product_id):
+    chain_id = Product.objects.get(id=product_id).chain.id
+    contacts = Contact.objects.filter(chain_fk__id=chain_id)
+    # contacts = Contact.objects.filter(chain_fk__id=chain_id)
+    serialized_chains = ContactSerializer(data=contacts, many=True)
+    serialized_chains.is_valid()
     content = {
         'network': serialized_chains.data,
     }
