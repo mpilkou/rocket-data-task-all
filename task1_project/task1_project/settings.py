@@ -52,18 +52,33 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'INFO',
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
-            'formatter': 'simple'
+            'formatter': 'simple',
         },
+        # 'file': {
+        #     'level': 'DEBUG',
+        #     'class': 'logging.FileHandler',
+        #     'filename': BASE_DIR.joinpath('debug.log'),
+        #     'formatter': 'verbose',
+        # },
     },
     'loggers': {
-        'django': {
+        'root': {
             'handlers': ['console'],
-            'propagate': True,
+            'level': 'DEBUG',
         },
-    }
+        # 'django.console': {
+        #     'handlers': ['console'],
+        #     # 'propagate': False,
+        #     'level':'DEBUG'
+        # },
+        # 'django.file': {
+        #     'handlers': ['file'],
+        #     'level': 'DEBUG',
+        #     'propagate': False,
+        # },
+    },
 }
 
 # SECURITY WARNING: don't run with debug turned on in production!
