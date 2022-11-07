@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 # Create your models here.
 class Chain(models.Model):
@@ -14,7 +15,7 @@ class Chain(models.Model):
     )
 
     name = models.CharField(max_length=50, blank=False)
-    user = models.ForeignKey(User, blank=False, on_delete=models.CASCADE)
+    staff = models.ManyToManyField(User, blank=False)
     debt = models.DecimalField(max_digits=50, decimal_places=2)
     date = models.DateField(verbose_name = 'creation date', auto_now_add=True)
     supplier = models.ForeignKey('Chain', on_delete = models.RESTRICT, blank=True, null=True)
@@ -37,6 +38,8 @@ class Chain(models.Model):
         return str(self.name)
 
 
+
+
 class Contact(models.Model):
     email = models.EmailField(blank=False)
     country = models.CharField(max_length=20, blank=False)
@@ -53,7 +56,7 @@ class Product(models.Model):
     name = models.CharField(max_length=100, blank=False)
     model = models.CharField(max_length=60, blank=False)
     chain = models.ForeignKey(Chain, on_delete = models.CASCADE)
-    date = models.DateField(verbose_name = 'relise date', auto_now=True, auto_now_add=False)
+    date = models.DateField(verbose_name = 'relise date', default=timezone.now())
 
     def __str__(self):
         return str(self.name)
