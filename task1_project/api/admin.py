@@ -9,8 +9,6 @@ from api.models import (
 
 
 # Register your models here.
-class ChainInline(admin.TabularInline):
-    model = Chain
 class ContactInline(admin.TabularInline):
     model = Contact
 class ProductInline(admin.TabularInline):
@@ -37,7 +35,6 @@ class ChainAdmin(admin.ModelAdmin):
     clear_debt.description='Clear debt'
 
     inlines = [
-        ChainInline,
         ContactInline,
         ProductInline,
     ]
