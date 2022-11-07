@@ -10,9 +10,10 @@ from drf_yasg.utils import swagger_auto_schema
 
 from django.core.exceptions import ValidationError
 from django.db.models import Avg, DecimalField, Q
+from django.contrib.auth.models import User
 
 from api.models import Chain, Contact, Product
-from api.serializers import ChainSerializer, ContactSerializer
+from api.serializers import ChainSerializer, ContactSerializer, ProductSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -83,11 +84,14 @@ def delete_chain(request, chain_id):
     except Chain.DoesNotExist:
         return Response(data = {'detail' : 'Chain with this id does not exists'}, status=400)
 
-    if chain.user.id != request.user.id:
+    try:
+        chain.staff.get(id = request.user.id)
+    except User.DoesNotExist:
         return Response(data = {'detail' : 'Forbidden'}, status=403)
 
     chain.delete()
     return Response(status=201)
+
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, BasicAuthentication, ])
@@ -134,3 +138,5 @@ def get_chain_contacts_by_product_id(_, product_id):
         'network': serialized_chains.data,
     }
     return Response(content, status=201)
+
+

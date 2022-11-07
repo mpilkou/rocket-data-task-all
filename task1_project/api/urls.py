@@ -46,7 +46,7 @@ urlpatterns = [
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
         SchemaView.without_ui(cache_timeout=0), name='schema-json'),
     path('chain/', views.get_chains_network, name='chains'),
-    # path('chain/<int:chain_id>/delete', views.delete_chain, name='delete_chain'),
+    path('chain/<int:chain_id>/delete', views.delete_chain, name='delete_chain'),
     path('chain/country/<str:country>', views.get_chains_by_country, name='chains_by_country'),
     path('chain/statictic/', views.get_chains_by_gt_avg_debt, name='gt_avg_debt'),
     path('product/<int:product_id>/contacts/', views.get_chain_contacts_by_product_id,
