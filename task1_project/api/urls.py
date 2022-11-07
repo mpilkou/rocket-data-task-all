@@ -51,5 +51,5 @@ urlpatterns = [
     path('chain/statictic/', views.get_chains_by_gt_avg_debt, name='gt_avg_debt'),
     path('product/<int:product_id>/contacts/', views.get_chain_contacts_by_product_id,
         name='contacts_by_product_id'),
-    # path('product/', views.get_product_network, name='products'),
+    path('product/', views.get_product_network, name='products'),
 ]

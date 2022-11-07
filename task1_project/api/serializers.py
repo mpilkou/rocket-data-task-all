@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import Chain, Contact
+from api.models import Chain, Contact, Product
 
 class ChainSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,4 +10,9 @@ class ChainSerializer(serializers.ModelSerializer):
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
+        fields = '__all__'
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
         fields = '__all__'

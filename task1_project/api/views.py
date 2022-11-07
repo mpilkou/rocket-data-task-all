@@ -140,3 +140,33 @@ def get_chain_contacts_by_product_id(_, product_id):
     return Response(content, status=201)
 
 
+
+@swagger_auto_schema(
+        methods=['put','post'],
+        request_body=ProductSerializer,
+        )
+@api_view(['PUT','POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication, ])
+@permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
+def get_product_network(request):
+    content = {}
+    if request.method == 'PUT':
+        request.data['user'] = request.user.id
+        product_serializer = ProductSerializer(data=request.data)
+
+        if not product_serializer.is_valid():
+            return Response(data = {'detail' : product_serializer.errors}, status=400)
+
+        chain_id = product_serializer.data.get('chain')
+        chain = Chain.objects.get(id = chain_id)
+        try:
+            chain.staff.get(id = request.user.id)
+        except User.DoesNotExist:
+            return Response(data = {'detail' : 'Forbidden'}, status=403)
+
+        content = product_serializer.data
+        return Response(content, status=201)
+    elif request.method == 'POST':
+        pass
+        return Response(status=201)
+    return Response(content, status=201)
