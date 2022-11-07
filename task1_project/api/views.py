@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
         methods=['put','post'],
         request_body=ChainSerializer,
         )
-@api_view(['GET','PUT','POST','DELETE'])
+@api_view(['GET','PUT','POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication, ])
 @permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
 def get_chains_network(request):
@@ -69,10 +69,25 @@ def get_chains_network(request):
 
         content = chain_serializer.data
         return Response(content, status=201)
-
-    elif request.method == 'DELETE':
-        pass
     return Response(content, status=201)
+
+@swagger_auto_schema(
+        methods=['delete'],
+        )
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, BasicAuthentication, ])
+@permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
+def delete_chain(request, chain_id):
+    try:
+        chain = Chain.objects.get(id = chain_id)
+    except Chain.DoesNotExist:
+        return Response(data = {'detail' : 'Chain with this id does not exists'}, status=400)
+
+    if chain.user.id != request.user.id:
+        return Response(data = {'detail' : 'Forbidden'}, status=403)
+
+    chain.delete()
+    return Response(status=201)
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, BasicAuthentication, ])
@@ -84,8 +99,6 @@ def get_chains_by_country(_, country):
         filtered_chains.append(Chain.objects.get(id = contact.chain_fk.id))
     serialized_chains = ChainSerializer(data=filtered_chains, many=True)
     serialized_chains.is_valid()
-
-
 
     content = {
         'network': serialized_chains.data,
