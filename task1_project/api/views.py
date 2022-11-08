@@ -159,14 +159,43 @@ def get_product_network(request):
 
         chain_id = product_serializer.data.get('chain')
         chain = Chain.objects.get(id = chain_id)
-        try:
-            chain.staff.get(id = request.user.id)
-        except User.DoesNotExist:
+
+        if not chain.staff.filter(id = request.user.id).exists():
             return Response(data = {'detail' : 'Forbidden'}, status=403)
 
         content = product_serializer.data
         return Response(content, status=201)
     elif request.method == 'POST':
-        pass
-        return Response(status=201)
+        request.data['user'] = request.user.id
+        try:
+            chech_id = request.data['id']
+        except KeyError:
+            return Response(data = {'detail' : 'Request does not have id to update'}, status=400)
+
+        try:
+            product_before_update = Product.objects.get(id=chech_id)
+        except Product.DoesNotExist:
+            return Response(data = {'detail' : 'Product with this id does not exists'}, status=400)
+
+
+        product_serializer = ProductSerializer(instance = product_before_update, data=request.data)
+        if not product_serializer.is_valid():
+            return Response(data = {'detail' : product_serializer.errors}, status=400)
+
+        chain_id = product_serializer.validated_data.get('chain').id
+        chain = Chain.objects.get(id = chain_id)
+        if not chain.staff.filter(id = request.user.id).exists():
+            return Response(data = {'detail' : 'Forbidden'}, status=403)
+        # try:
+        #     chain.staff.get(id = request.user.id)
+        # except User.DoesNotExist:
+        #     return Response(data = {'detail' : 'Forbidden'}, status=403)
+
+        try:
+            product_serializer.save()
+        except ValidationError as validation_error:
+            return Response(data = {'detail' : validation_error}, status=400)
+
+        content = product_serializer.data
+        return Response(content, status=201)
     return Response(content, status=201)
