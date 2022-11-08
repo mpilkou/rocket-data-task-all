@@ -55,7 +55,7 @@ class Contact(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=100, blank=False)
+    name = models.CharField(max_length=25, blank=False)
     model = models.CharField(max_length=60, blank=False)
     chain_fk = models.ForeignKey(Chain, on_delete=models.CASCADE)
     date = models.DateField(verbose_name='relise date', default=timezone.now())
