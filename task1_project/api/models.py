@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
+
 # Create your models here.
 class Chain(models.Model):
     TYPES_CHOISE_FIELD = (
@@ -17,27 +18,28 @@ class Chain(models.Model):
     name = models.CharField(max_length=50, blank=False)
     staff = models.ManyToManyField(User, blank=False)
     debt = models.DecimalField(max_digits=50, decimal_places=2)
-    date = models.DateField(verbose_name = 'creation date', auto_now_add=True)
-    supplier = models.ForeignKey('Chain', on_delete = models.RESTRICT, blank=True, null=True)
+    date = models.DateField(verbose_name='creation date', auto_now_add=True)
+    supplier = models.ForeignKey(
+        'Chain', on_delete=models.RESTRICT,
+        blank=True, null=True)
 
-    type = models.CharField(max_length=1, choices = TYPES_CHOISE_FIELD)
+    type = models.CharField(max_length=1, choices=TYPES_CHOISE_FIELD)
     level = models.SmallIntegerField(default=0)
 
     def save(self, *args, **kwargs):
         self.clean()
         if self.supplier is not None:
-            supplie_obj = Chain.objects.get(pk = self.supplier_id)
+            supplie_obj = Chain.objects.get(pk=self.supplier_id)
             self.level = supplie_obj.level + 1
 
         if self.level > 4:
-            raise ValidationError(' validation error: level is too hight to this network ')
+            raise ValidationError(
+                'validation error: level is too hight to this network')
         else:
             return super().save(*args, **kwargs)
 
     def __str__(self):
         return str(self.name)
-
-
 
 
 class Contact(models.Model):
@@ -55,8 +57,8 @@ class Contact(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=100, blank=False)
     model = models.CharField(max_length=60, blank=False)
-    chain = models.ForeignKey(Chain, on_delete = models.CASCADE)
-    date = models.DateField(verbose_name = 'relise date', default=timezone.now())
+    chain = models.ForeignKey(Chain, on_delete=models.CASCADE)
+    date = models.DateField(verbose_name='relise date', default=timezone.now())
 
     def __str__(self):
         return str(self.name)

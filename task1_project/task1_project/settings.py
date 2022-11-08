@@ -29,7 +29,6 @@ ENV = os.environ.get
 ENV = os.getenv
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-6&mhe$ge*e9%_)law@s^v0g3gngr$uwhx6!&)^w(i+$_efqr5x'
 SECRET_KEY = ENV("SECRET_KEY")
 
 LOGGING = {
@@ -41,7 +40,8 @@ LOGGING = {
             'style': '{',
         },
         'verbose': {
-            'format': '{levelname} {asctime} {module} \{process:d} {thread:d}/ {message}',
+            'format': '{levelname} {asctime} {module} \
+                | {process:d} {thread:d} | {message}',
             'style': '{',
         },
     },

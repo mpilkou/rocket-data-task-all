@@ -11,8 +11,12 @@ from api.models import (
 # Register your models here.
 class ContactInline(admin.TabularInline):
     model = Contact
+
+
 class ProductInline(admin.TabularInline):
     model = Product
+
+
 class ChainAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'type', 'view_supplier_link', 'debt', )
     list_display_links = ('name', 'view_supplier_link')
@@ -32,12 +36,13 @@ class ChainAdmin(admin.ModelAdmin):
                 chain.debt = 0
                 chain.save()
         self.message_user(req, "Debt is cleaned")
-    clear_debt.description='Clear debt'
 
+    clear_debt.description = 'Clear debt'
     inlines = [
         ContactInline,
         ProductInline,
     ]
+
 
 admin.site.register(Contact)
 admin.site.register(Product)
