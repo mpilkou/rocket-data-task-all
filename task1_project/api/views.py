@@ -146,7 +146,7 @@ def get_chains_by_gt_avg_debt(_):
 @authentication_classes([SessionAuthentication, BasicAuthentication, ])
 @permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
 def get_chain_contacts_by_product_id(_, product_id):
-    chain_id = Product.objects.get(id=product_id).chain.id
+    chain_id = Product.objects.get(id=product_id).chain_fk.id
     contacts = Contact.objects.filter(chain_fk__id=chain_id)
     # contacts = Contact.objects.filter(chain_fk__id=chain_id)
     serialized_chains = ContactSerializer(data=contacts, many=True)
@@ -174,7 +174,7 @@ def get_product_network(request):
             return Response(
                 data={'detail': product_serializer.errors}, status=400)
 
-        chain_id = product_serializer.data.get('chain')
+        chain_id = product_serializer.data.get('chain_fk')
         chain = Chain.objects.get(id=chain_id)
 
         if not chain.staff.filter(id=request.user.id).exists():
@@ -204,7 +204,7 @@ def get_product_network(request):
             return Response(
                 data={'detail': product_serializer.errors}, status=400)
 
-        chain_id = product_serializer.validated_data.get('chain').id
+        chain_id = product_serializer.validated_data.get('chain_fk').id
         chain = Chain.objects.get(id=chain_id)
         if not chain.staff.filter(id=request.user.id).exists():
             return Response(data={'detail': 'Forbidden'}, status=403)
