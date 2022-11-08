@@ -112,10 +112,10 @@ def delete_chain(request, chain_id):
 @authentication_classes([SessionAuthentication, BasicAuthentication, ])
 @permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
 def get_chains_by_country(_, country):
-    filtered_chains = []
+    filtered_chains = set()
 
     for contact in Contact.objects.filter(country=country):
-        filtered_chains.append(Chain.objects.get(id=contact.chain_fk.id))
+        filtered_chains.add(Chain.objects.get(id=contact.chain_fk.id))
     serialized_chains = ChainSerializer(data=filtered_chains, many=True)
     serialized_chains.is_valid()
 
@@ -131,8 +131,7 @@ def get_chains_by_country(_, country):
 def get_chains_by_gt_avg_debt(_):
     avg_debt = Chain.objects.aggregate(
         avg=Avg('debt', output_field=DecimalField()))['avg']
-    q_obj = Q(chain__debt__gt=avg_debt)
-    filtered_chains = Chain.objects.filter(q_obj)
+    filtered_chains = Chain.objects.filter(chain__debt__gt=avg_debt).distinct()
     serialized_chains = ChainSerializer(data=filtered_chains, many=True)
     serialized_chains.is_valid()
 
