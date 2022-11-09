@@ -24,10 +24,10 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 @swagger_auto_schema(
-        methods=['put', 'post'],
+        methods=['put'],
         request_body=ChainSerializer,
         )
-@api_view(['GET', 'PUT', 'POST'])
+@api_view(['GET', 'PUT'])
 @authentication_classes([SessionAuthentication, BasicAuthentication, ])
 @permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
 def get_chains_network(request):
@@ -53,18 +53,37 @@ def get_chains_network(request):
 
         content = chain_serializer.data
         return Response(content, status=201)
+    return Response(content, status=201)
+
+
+@swagger_auto_schema(
+        methods=['delete'],
+        )
+@swagger_auto_schema(
+        methods=['post'],
+        request_body=ChainSerializer,
+        )
+@api_view(['DELETE', 'POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication, ])
+@permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
+def update_chain(request, chain_id):
+    if request.method == 'DELETE':
+        try:
+            chain = Chain.objects.get(id=chain_id)
+        except Chain.DoesNotExist:
+            return Response(
+                data={'detail': 'Chain with this id does not exists'}, status=400)
+
+        try:
+            chain.staff.get(id=request.user.id)
+        except User.DoesNotExist:
+            return Response(data={'detail': 'Forbidden'}, status=403)
+
+        chain.delete()
     elif request.method == 'POST':
         request.data['user'] = request.user.id
-
         try:
-            chech_id = request.data['id']
-        except KeyError:
-            return Response(
-                data={'detail': 'Request does not have id to update'},
-                status=400)
-
-        try:
-            chain_before_update = Chain.objects.get(id=chech_id)
+            chain_before_update = Chain.objects.get(id=chain_id)
         except Chain.DoesNotExist:
             return Response(
                 data={'detail': 'Chain with this id does not exists'},
@@ -83,28 +102,7 @@ def get_chains_network(request):
 
         content = chain_serializer.data
         return Response(content, status=201)
-    return Response(content, status=201)
 
-
-@swagger_auto_schema(
-        methods=['delete'],
-        )
-@api_view(['DELETE'])
-@authentication_classes([SessionAuthentication, BasicAuthentication, ])
-@permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
-def delete_chain(request, chain_id):
-    try:
-        chain = Chain.objects.get(id=chain_id)
-    except Chain.DoesNotExist:
-        return Response(
-            data={'detail': 'Chain with this id does not exists'}, status=400)
-
-    try:
-        chain.staff.get(id=request.user.id)
-    except User.DoesNotExist:
-        return Response(data={'detail': 'Forbidden'}, status=403)
-
-    chain.delete()
     return Response(status=201)
 
 
@@ -157,10 +155,10 @@ def get_chain_contacts_by_product_id(_, product_id):
 
 
 @swagger_auto_schema(
-        methods=['put', 'post'],
+        methods=['put'],
         request_body=ProductSerializer,
         )
-@api_view(['PUT', 'POST'])
+@api_view(['PUT'])
 @authentication_classes([SessionAuthentication, BasicAuthentication, ])
 @permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
 def get_product_network(request):
@@ -181,17 +179,23 @@ def get_product_network(request):
 
         content = product_serializer.data
         return Response(content, status=201)
-    elif request.method == 'POST':
+    return Response(content, status=201)
+
+
+
+@swagger_auto_schema(
+        methods=['post'],
+        request_body=ProductSerializer,
+        )
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication, ])
+@permission_classes([IsAuthenticatedOrReadOnly, IsAuthenticated, ])
+def update_product(request, product_id):
+    if request.method == 'POST':
         request.data['user'] = request.user.id
-        try:
-            chech_id = request.data['id']
-        except KeyError:
-            return Response(
-                data={'detail': 'Request does not have id to update'},
-                status=400)
 
         try:
-            product_before_update = Product.objects.get(id=chech_id)
+            product_before_update = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
             return Response(
                 data={'detail': 'Product with this id does not exists'},
@@ -207,10 +211,6 @@ def get_product_network(request):
         chain = Chain.objects.get(id=chain_id)
         if not chain.staff.filter(id=request.user.id).exists():
             return Response(data={'detail': 'Forbidden'}, status=403)
-        # try:
-        #     chain.staff.get(id = request.user.id)
-        # except User.DoesNotExist:
-        #     return Response(data = {'detail' : 'Forbidden'}, status=403)
 
         try:
             product_serializer.save()
@@ -219,4 +219,3 @@ def get_product_network(request):
 
         content = product_serializer.data
         return Response(content, status=201)
-    return Response(content, status=201)

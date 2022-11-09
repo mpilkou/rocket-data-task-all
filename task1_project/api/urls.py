@@ -57,8 +57,8 @@ urlpatterns = [
         'chain/', views.get_chains_network,
         name='chains'),
     path(
-        'chain/<int:chain_id>/delete', views.delete_chain,
-        name='delete_chain'),
+        'chain/<int:chain_id>', views.update_chain,
+        name='update_chain'),
     path(
         'chain/country/<str:country>', views.get_chains_by_country,
         name='chains_by_country'),
@@ -71,4 +71,6 @@ urlpatterns = [
         name='contacts_by_product_id'),
     path(
         'product/', views.get_product_network, name='products'),
+    path(
+        'product/<int:product_id>', views.update_product, name='update_products'),
 ]
