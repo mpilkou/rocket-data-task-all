@@ -61,7 +61,7 @@ class Product(models.Model):
     date = models.DateField(verbose_name='relise date', default=timezone.now())
 
     def save(self, *args, **kwargs):
-        if self.date > timezone.now():
+        if self.date > timezone.now().date():
             raise ValidationError("date cannot be in the future")
         super(Product, self).save(*args, **kwargs)
 
