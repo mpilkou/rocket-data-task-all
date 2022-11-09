@@ -60,5 +60,10 @@ class Product(models.Model):
     chain_fk = models.ForeignKey(Chain, on_delete=models.CASCADE)
     date = models.DateField(verbose_name='relise date', default=timezone.now())
 
+    def save(self, *args, **kwargs):
+        if self.date > timezone.now():
+            raise ValidationError("date cannot be in the future")
+        super(Product, self).save(*args, **kwargs)
+
     def __str__(self):
         return str(self.name)
