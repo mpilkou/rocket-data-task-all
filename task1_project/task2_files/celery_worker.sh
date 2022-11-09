@@ -1,0 +1,1 @@
+python3 -m celery -A task1_project.celery worker --loglevel=info

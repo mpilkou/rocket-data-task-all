@@ -1,0 +1,1 @@
+celery -A task1_project.celery beat -l INFO

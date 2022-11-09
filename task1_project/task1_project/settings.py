@@ -98,7 +98,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_yasg',
-    'api.apps.ApiConfig'
+    'api',
+    # 'api.apps.ApiConfig',
+    # 'django_celery_beat',
+    # 'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -170,7 +173,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Minsk'
 
 USE_I18N = True
 
@@ -212,3 +215,7 @@ SWAGGER_SETTINGS = {
     "JSON_EDITOR": True,
     "REFETCH_SCHEMA_ON_LOGOUT": True,
 }
+
+CELERY_BROKER_URL = ENV('BROKER_URL')
+CELERY_RESULT_BACKEND = ENV('RESULT_BACKEND')
+CELERY_TIMEZONE = 'Europe/Minsk'
