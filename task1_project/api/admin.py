@@ -32,7 +32,7 @@ class ChainAdmin(admin.ModelAdmin):
 
     def clear_debt(self, req, queryset):
         for chain in queryset:
-            if chain.debt < 0:
+            if chain.debt > 0:
                 chain.debt = 0
                 chain.save()
         self.message_user(req, "Debt is cleaned")
